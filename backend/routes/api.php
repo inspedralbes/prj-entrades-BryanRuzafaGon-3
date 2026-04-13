@@ -7,12 +7,13 @@ use App\Http\Controllers\VendaController;
 use App\Http\Controllers\SeientController;
 
 // Endpoints en Català segons normativa del TR
-Route::get('/health', function() {
+// Endpoint de verificació de salut de l'API
+Route::get('/salut', function() {
     try {
         DB::connection()->getPdo();
-        return response()->json(['status' => 'ok', 'database' => 'connected']);
+        return response()->json(['estat' => 'correcte', 'base_dades' => 'connectada']);
     } catch (\Exception $e) {
-        return response()->json(['status' => 'error', 'message' => $e->getMessage()], 500);
+        return response()->json(['estat' => 'error', 'missatge' => $e->getMessage()], 500);
     }
 });
 

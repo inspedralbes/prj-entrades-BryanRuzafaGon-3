@@ -32,6 +32,7 @@
   </div>
 </template>
 
+<script setup>
 const config = useRuntimeConfig();
 const { data: esdeveniments } = await useFetch(`${config.public.apiBase}/esdeveniments`);
 
