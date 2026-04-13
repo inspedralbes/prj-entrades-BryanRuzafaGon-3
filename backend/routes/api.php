@@ -7,6 +7,15 @@ use App\Http\Controllers\VendaController;
 use App\Http\Controllers\SeientController;
 
 // Endpoints en Català segons normativa del TR
+Route::get('/health', function() {
+    try {
+        DB::connection()->getPdo();
+        return response()->json(['status' => 'ok', 'database' => 'connected']);
+    } catch (\Exception $e) {
+        return response()->json(['status' => 'error', 'message' => $e->getMessage()], 500);
+    }
+});
+
 Route::get('/esdeveniments', [EsdevenimentController::class, 'index']);
 Route::get('/esdeveniments/{id}', [EsdevenimentController::class, 'show']);
 

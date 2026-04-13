@@ -1,83 +1,79 @@
-# Manual d'Instal·lació i Configuració
+# Guia d'Instal·lació des de Zero (Setup Guide)
 
-Aquest document detalla els passos necessaris per desplegar el projecte "Teatre Regalia" en un entorn de desenvolupament local.
+Aquesta guia explica com preparar una màquina nova (Windows, Mac o Linux) per executar el projecte "Teatre Regalia".
 
-## Requisits Previs
-- **PHP** >= 8.2
-- **Composer**
-- **Node.js** >= 18.x
-- **SQLite** (inclòs per defecte en PHP/Laravel)
+## Pas 1: Instal·lació dels Programes Necessaris
+Abans de tocar el codi, la teva "màquina" ha de parlar el llenguatge del projecte. Instal·la aquests programes en l'ordre indicat:
+
+1. **Git**: Descarrega'l a [git-scm.com](https://git-scm.com/). Serveix per baixar el projecte.
+2. **Node.js**: Descarrega la versió **LTS** (recomanat 18 o 20) a [nodejs.org](https://nodejs.org/).
+3. **PHP**: Per a Windows, la forma més fàcil és usar [XAMPP](https://www.apachefriends.org/) (assegura't que sigui PHP 8.2 o superior).
+4. **Composer**: L'instal·lador de Laravel. Descarrega'l a [getcomposer.org](https://getcomposer.org/).
 
 ---
 
-## 1. Backend (Laravel API)
-El backend gestiona la persistència de dades i els pagaments.
+## Pas 2: Obtenir el Codi i Preparar el Backend
+Obre un terminal (PowerShell o CMD) i segueix aquests passos:
 
-1. Entra a la carpeta del backend:
+1. **Clonar el repositori**:
+   ```bash
+   git clone https://github.com/inspedralbes/prj-entrades-BryanRuzafaGon-3
+   cd prj-entrades-BryanRuzafaGon-3
+   ```
+
+2. **Configurar el Backend (Laravel)**:
    ```bash
    cd backend
-   ```
-2. Instal·la les dependències:
-   ```bash
    composer install
-   ```
-3. Configura l'entorn:
-   ```bash
    copy .env.example .env
    php artisan key:generate
    ```
-4. Prepara la base de dades:
+
+3. **Crear la Base de Dades**:
+   *El projecte usa SQLite per no haver de configurar servidors complexos.*
    ```bash
-   touch database/database.sqlite
+   # Crea el fitxer buit de la base de dades
+   ni database/database.sqlite   # En Windows
+   # O simplement crea un fitxer buit anomenat database.sqlite a la carpeta database/
+   
+   # Executa les taules i les dades de prova
    php artisan migrate:fresh --seed
    ```
-5. Inicia el servidor:
-   ```bash
-   php artisan serve --port=8000
-   ```
 
 ---
 
-## 2. Servidor de Temps Real (Node.js)
-Motor de sincronització de butaques i concurrència.
+## Pas 3: Dependències de Temps Real i Frontend
+Necessitem baixar les llibreries de JavaScript per als dos mòduls restants.
 
-1. Entra a la carpeta realtime:
+1. **Instal·lar Sockets (Realtime)**:
    ```bash
-   cd realtime
-   ```
-2. Instal·la les dependències:
-   ```bash
+   cd ../realtime
    npm install
    ```
-3. Inicia el servidor:
-   ```bash
-   node index.js
-   ```
-   *El servidor escoltarà al port 3001.*
 
----
-
-## 3. Frontend (Nuxt.js)
-Interfície d'usuari reactiva.
-
-1. Entra a la carpeta frontend:
+2. **Instal·lar Interfície (Frontend)**:
    ```bash
-   cd frontend
-   ```
-2. Instal·la les dependències:
-   ```bash
+   cd ../frontend
    npm install
    ```
-3. Inicia l'aplicació en mode desenvolupament:
-   ```bash
-   npm run dev
-   ```
-4. Accedeix a l'aplicació:
-   [http://localhost:3000](http://localhost:3000)
 
 ---
 
-## Notes Adicionals
-- **Accés Admin:** Pots accedir al panell de control a `/admin`.
-- **Base de dades:** S'utilitza SQLite per simplificar la correcció del tribunal. No cal configurar MySQL.
-- **CORS:** El backend està configurat per acceptar peticions des de `localhost:3000`.
+## Pas 4: Com executar el projecte (3 terminals)
+Perquè el sistema funcioni al 100%, has de tenir **tres finestres del terminal obertes a la vegada**:
+
+1. **Terminal 1 (Backend)**:
+   Dins de la carpeta `backend`, executa: `php artisan serve`
+   *(Això aixeca l'API al port 8000)*.
+
+2. **Terminal 2 (Realtime)**:
+   Dins de la carpeta `realtime`, executa: `node index.js`
+   *(Això aixeca els WebSockets al port 3001)*.
+
+3. **Terminal 3 (Frontend)**:
+   Dins de la carpeta `frontend`, executa: `npm run dev`
+   *(Això obre la web a [http://localhost:3000](http://localhost:3000))*.
+
+---
+
+¡Ja ho tens! Ara pots entrar a la web i començar a comprar entrades o gestionar l'esdeveniment des de `/admin`.

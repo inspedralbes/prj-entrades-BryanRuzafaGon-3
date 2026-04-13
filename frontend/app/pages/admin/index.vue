@@ -132,10 +132,11 @@ const nouEsdeveniment = reactive({
 })
 
 let socket = null
+const config = useRuntimeConfig()
 
 const carregarEstadistiques = async () => {
   try {
-    const res = await fetch('http://localhost:8000/api/admin/estadistiques', {
+    const res = await fetch(`${config.public.apiBase}/admin/estadistiques`, {
       headers: { 'Accept': 'application/json' }
     })
     const data = await res.json()
@@ -172,8 +173,8 @@ const guardarEsdeveniment = async () => {
   exitCreacio.value = false
 
   const url = editantId.value 
-    ? `http://localhost:8000/api/admin/esdeveniments/${editantId.value}`
-    : 'http://localhost:8000/api/admin/esdeveniments'
+    ? `${config.public.apiBase}/admin/esdeveniments/${editantId.value}`
+    : `${config.public.apiBase}/admin/esdeveniments`
     
   const method = editantId.value ? 'PUT' : 'POST'
 
@@ -215,7 +216,7 @@ const eliminarEsdeveniment = async (id) => {
   if (!confirm("Estàs segur que vols eliminar aquest esdeveniment? Totes les dades i vendes associades s'esborraran permanentment.")) return;
 
   try {
-    const res = await fetch(`http://localhost:8000/api/admin/esdeveniments/${id}`, {
+    const res = await fetch(`${config.public.apiBase}/admin/esdeveniments/${id}`, {
       method: 'DELETE',
       headers: { 'Accept': 'application/json' }
     })
@@ -233,7 +234,7 @@ const eliminarEsdeveniment = async (id) => {
 onMounted(() => {
   carregarEstadistiques()
 
-  socket = io('http://localhost:3001')
+  socket = io(config.public.socketHost)
   
   socket.on('connect', () => {
     connected.value = true

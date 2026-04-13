@@ -53,6 +53,7 @@ const email = ref('')
 const entrades = ref([])
 const carregant = ref(false)
 const cercat = ref(false)
+const config = useRuntimeConfig()
 
 const cercar = async () => {
   if (!email.value) return
@@ -60,7 +61,7 @@ const cercar = async () => {
   carregant.value = true
   cercat.value = true
   try {
-    const res = await fetch(`http://localhost:8000/api/venda/consulta/${email.value}`)
+    const res = await fetch(`${config.public.apiBase}/venda/consulta/${email.value}`)
     entrades.value = await res.json()
   } catch (e) {
     console.error("Error en la consulta", e)

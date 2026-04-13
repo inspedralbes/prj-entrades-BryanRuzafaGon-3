@@ -32,10 +32,9 @@ export const usTaulerSeientsStore = defineStore('taulerSeients', {
 
   actions: {
     iniciarConnexioSocket(eid, seientsInicials) {
-      if (this.socket) this.socket.disconnect();
-      
+      const config = useRuntimeConfig();
       this.esdeveniment_id = eid;
-      this.socket = io('http://localhost:3001');
+      this.socket = io(config.public.socketHost);
 
       this.socket.on('connect', () => {
         this.connectat = true;
@@ -99,8 +98,9 @@ export const usTaulerSeientsStore = defineStore('taulerSeients', {
             return;
         }
 
+        const config = useRuntimeConfig();
         // Persistència a Laravel
-        const resposta = await fetch('http://localhost:8000/api/venda/confirmar', {
+        const resposta = await fetch(`${config.public.apiBase}/venda/confirmar`, {
           method: 'POST',
           headers: { 
             'Content-Type': 'application/json',

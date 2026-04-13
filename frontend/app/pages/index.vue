@@ -32,8 +32,8 @@
   </div>
 </template>
 
-<script setup>
-const { data: esdeveniments } = await useFetch('http://localhost:8000/api/esdeveniments');
+const config = useRuntimeConfig();
+const { data: esdeveniments } = await useFetch(`${config.public.apiBase}/esdeveniments`);
 
 const formulariData = (dataStr) => {
   return new Date(dataStr).toLocaleString('ca-ES', { 

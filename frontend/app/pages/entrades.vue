@@ -48,12 +48,13 @@ const emailCerca = ref('')
 const vendes = ref([])
 const carregant = ref(false)
 const haBuscat = ref(false)
+const config = useRuntimeConfig()
 
 const consultar = async () => {
   if (!emailCerca.value) return;
   carregant.value = true;
   try {
-    const res = await fetch(`http://localhost:8000/api/venda/consulta/${emailCerca.value}`);
+    const res = await fetch(`${config.public.apiBase}/venda/consulta/${emailCerca.value}`);
     vendes.value = await res.json();
     haBuscat.value = true;
   } catch (e) {
