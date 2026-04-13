@@ -1,6 +1,6 @@
 export default defineEventHandler(async (event) => {
   // Capturem el camí i les dades per reenviar-les al backend de Laravel
-  const backendUrl = 'http://localhost:8000/api'
+  const backendUrl = 'http://127.0.0.1:8000/api'
   const path = event.path.replace(/^\/api/, '')
   const target = `${backendUrl}${path}`
 
