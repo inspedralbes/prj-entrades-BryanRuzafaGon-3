@@ -6,7 +6,7 @@ export default defineNuxtConfig({
   ssr: false, 
   runtimeConfig: {
     public: {
-      apiBase: '', // Es detectarà dinàmicament al frontend
+      apiBase: '/api', // Ara les peticions passaran pel nostre server proxy
       socketHost: '' 
     }
   }

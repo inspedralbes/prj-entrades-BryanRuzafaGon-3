@@ -32,12 +32,11 @@ export const usTaulerSeientsStore = defineStore('taulerSeients', {
   },
 
   getters: {
-    // Detectem la IP del servidor dinàmicament per evitar problemes de connexió (localhost vs IP real)
+    // Detectem la IP per al Socket (port 3001) però l'API ja va via Proxy a /api
     obtenirUrls(state) {
-      if (typeof window === 'undefined') return { api: '', socket: '' };
+      if (typeof window === 'undefined') return { socket: '' };
       const hostname = window.location.hostname;
       return {
-        api: `http://${hostname}:8000/api`,
         socket: `http://${hostname}:3001`
       };
     }
@@ -112,9 +111,9 @@ export const usTaulerSeientsStore = defineStore('taulerSeients', {
             return;
         }
 
-        const urls = this.obtenirUrls;
-        // Persistència a Laravel
-        const resposta = await fetch(`${urls.api}/venda/confirmar`, {
+        const config = useRuntimeConfig();
+        // Persistència a Laravel via Proxy
+        const resposta = await fetch(`${config.public.apiBase}/venda/confirmar`, {
           method: 'POST',
           headers: { 
             'Content-Type': 'application/json',

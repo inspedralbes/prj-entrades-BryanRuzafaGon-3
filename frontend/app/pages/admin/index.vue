@@ -132,22 +132,19 @@ const nouEsdeveniment = reactive({
 })
 
 let socket = null
+const config = useRuntimeConfig()
 
-// Funció per detectar la IP del servidor dinàmicament (Requeriment acadèmic TR)
-const obtenirUrlsCodi = () => {
-  if (typeof window === 'undefined') return { api: '', socket: '' }
-  const hostname = window.location.hostname
-  return {
-    api: `http://${hostname}:8000/api`,
-    socket: `http://${hostname}:3001`
-  }
+// Detecció intel·ligent del Socket (port 3001)
+const obtenirHostSocket = () => {
+  if (typeof window === 'undefined') return ''
+  return `http://${window.location.hostname}:3001`
 }
 
-const urls = obtenirUrlsCodi()
+const socketHost = obtenirHostSocket()
 
 const carregarEstadistiques = async () => {
   try {
-    const res = await fetch(`${urls.api}/admin/estadistiques`, {
+    const res = await fetch(`${config.public.apiBase}/admin/estadistiques`, {
       headers: { 'Accept': 'application/json' }
     })
     const data = await res.json()
@@ -184,8 +181,8 @@ const guardarEsdeveniment = async () => {
   exitCreacio.value = false
 
   const url = editantId.value 
-    ? `${urls.api}/admin/esdeveniments/${editantId.value}`
-    : `${urls.api}/admin/esdeveniments`
+    ? `${config.public.apiBase}/admin/esdeveniments/${editantId.value}`
+    : `${config.public.apiBase}/admin/esdeveniments`
     
   const method = editantId.value ? 'PUT' : 'POST'
 
@@ -227,7 +224,7 @@ const eliminarEsdeveniment = async (id) => {
   if (!confirm("Estàs segur que vols eliminar aquest esdeveniment? Totes les dades i vendes associades s'esborraran permanentment.")) return;
 
   try {
-    const res = await fetch(`${urls.api}/admin/esdeveniments/${id}`, {
+    const res = await fetch(`${config.public.apiBase}/admin/esdeveniments/${id}`, {
       method: 'DELETE',
       headers: { 'Accept': 'application/json' }
     })
@@ -245,7 +242,7 @@ const eliminarEsdeveniment = async (id) => {
 onMounted(() => {
   carregarEstadistiques()
 
-  socket = io(urls.socket)
+  socket = io(socketHost)
   
   socket.on('connect', () => {
     connected.value = true
