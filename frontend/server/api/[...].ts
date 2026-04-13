@@ -1,17 +1,22 @@
 export default defineEventHandler(async (event) => {
-  // Capturem el camí i les dades per reenviar-les al backend de Laravel
   const backendUrl = 'http://127.0.0.1:8000/api'
   const path = event.path.replace(/^\/api/, '')
   const target = `${backendUrl}${path}`
 
+  console.log(`[BRIDGE] Reenviant: ${event.method} ${event.path} -> ${target}`)
+
   try {
-    // Utilitzem la funció nativa h3 per fer el proxying mantenint capçaleres i mètodes (POST, GET, etc.)
-    return await proxyRequest(event, target)
+    return await proxyRequest(event, target, {
+      fetchOptions: {
+        // Ignorem errors de certificat si n'hi hagués (encara que és HTTP)
+        rejectUnauthorized: false
+      }
+    })
   } catch (error) {
-    console.error(`Error de bridge (Nuxt -> Laravel): ${error.message}`)
+    console.error(`[BRIDGE ERROR]: ${error.message}`)
     throw createError({
       statusCode: 502,
-      statusMessage: 'El backend no respon correctament.'
+      statusMessage: `Error de connexió interna al backend: ${error.message}`
     })
   }
 })
