@@ -6,6 +6,8 @@ import cors from 'cors';
 const app = express();
 app.use(cors());
 
+const LARAVEL_API_URL = process.env.LARAVEL_API_URL || 'http://localhost:8000';
+
 const httpServer = createServer(app);
 const io = new Server(httpServer, {
   cors: {
@@ -84,7 +86,7 @@ io.on('connection', (socket) => {
 
     if (seient.estat === 'disponible') {
       // 1. Notifiquem a Laravel primer per assegurar persistència SQL
-      fetch('http://localhost:8000/api/seients/reservar', {
+      fetch(`${LARAVEL_API_URL}/api/seients/reservar`, {
         method: 'POST',
         headers: { 
           'Content-Type': 'application/json',
@@ -110,7 +112,7 @@ io.on('connection', (socket) => {
               console.log(`Reserva caducada: ${id_seient} (Esdeveniment ${esdeveniment_id})`);
               
               // Notifiquem alliberament a Laravel
-              await fetch('http://localhost:8000/api/seients/alliberar', {
+              await fetch(`${LARAVEL_API_URL}/api/seients/alliberar`, {
                 method: 'POST',
                 headers: { 
                   'Content-Type': 'application/json',
