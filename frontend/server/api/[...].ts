@@ -3,20 +3,25 @@ export default defineEventHandler(async (event) => {
   const path = event.path.replace(/^\/api/, '')
   const target = `${backendUrl}${path}`
 
-  console.log(`[BRIDGE] Reenviant: ${event.method} ${event.path} -> ${target}`)
+  console.log(`[BRIDGE] ${event.method} ${event.path} -> ${target}`)
 
   try {
-    return await proxyRequest(event, target, {
-      fetchOptions: {
-        // Ignorem errors de certificat si n'hi hagués (encara que és HTTP)
-        rejectUnauthorized: false
-      }
+    // Escollim el mètode de petició manual per tenir control total sobre l'error
+    const body = event.method !== 'GET' ? await readBody(event).catch(() => undefined) : undefined
+    
+    return await $fetch(target, {
+      method: event.method,
+      headers: getProxyRequestHeaders(event),
+      body: body,
+      retry: 0 // No reintentar per veure l'error real
     })
   } catch (error) {
-    console.error(`[BRIDGE ERROR]: ${error.message}`)
+    const errorMsg = error.response?._data?.message || error.message
+    console.error(`[BRIDGE ERROR] Destí: ${target} | Error: ${errorMsg}`)
+    
     throw createError({
       statusCode: 502,
-      statusMessage: `Error de connexió interna al backend: ${error.message}`
+      statusMessage: `Error de connexió interna: ${errorMsg}`
     })
   }
 })
