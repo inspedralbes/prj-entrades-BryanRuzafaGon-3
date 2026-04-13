@@ -36,7 +36,7 @@ export const usTaulerSeientsStore = defineStore('taulerSeients', {
       if (typeof window === 'undefined') return { socket: '' };
       const hostname = window.location.hostname;
       return {
-        socket: `http://${hostname}:3001`
+        socket: `http://${hostname}`
       };
     }
   },
