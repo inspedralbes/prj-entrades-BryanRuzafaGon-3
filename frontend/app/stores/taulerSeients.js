@@ -28,7 +28,6 @@ export const usTaulerSeientsStore = defineStore('taulerSeients', {
        email: ''
     }
     }
-    };
   },
 
   getters: {
