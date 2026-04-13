@@ -3,7 +3,7 @@ export default defineEventHandler(async (event) => {
   const path = event.path.replace(/^\/api/, '')
   const target = `${backendUrl}${path}`
 
-  console.log(`[BRIDGE] ${event.method} ${event.path} -> ${target}`)
+  console.log(`[API Proxy] ${event.method} ${event.path}`)
 
   try {
     // Escollim el mètode de petició manual per tenir control total sobre l'error
