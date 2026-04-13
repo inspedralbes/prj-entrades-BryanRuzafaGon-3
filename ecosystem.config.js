@@ -16,6 +16,8 @@ module.exports = {
       script: '.output/server/index.mjs',
       env: {
         PORT: 3002,
+        NITRO_HOST: '127.0.0.1',
+        HOST: '127.0.0.1',
         NODE_ENV: 'production'
       }
     },
