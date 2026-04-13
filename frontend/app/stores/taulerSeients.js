@@ -33,8 +33,15 @@ export const usTaulerSeientsStore = defineStore('taulerSeients', {
   actions: {
     iniciarConnexioSocket(eid, seientsInicials) {
       const config = useRuntimeConfig();
+      let host = config.public.socketHost;
+      
+      // Si estem en producció (per IP), forcem que el socket busqui la mateixa IP al port 3001
+      if (typeof window !== 'undefined' && window.location.hostname !== 'localhost' && host.includes('localhost')) {
+        host = `http://${window.location.hostname}:3001`;
+      }
+
       this.esdeveniment_id = eid;
-      this.socket = io(config.public.socketHost);
+      this.socket = io(host);
 
       this.socket.on('connect', () => {
         this.connectat = true;

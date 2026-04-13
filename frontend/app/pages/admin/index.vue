@@ -234,7 +234,11 @@ const eliminarEsdeveniment = async (id) => {
 onMounted(() => {
   carregarEstadistiques()
 
-  socket = io(config.public.socketHost)
+  let host = config.public.socketHost;
+  if (typeof window !== 'undefined' && window.location.hostname !== 'localhost' && host.includes('localhost')) {
+    host = `http://${window.location.hostname}:3001`;
+  }
+  socket = io(host)
   
   socket.on('connect', () => {
     connected.value = true
