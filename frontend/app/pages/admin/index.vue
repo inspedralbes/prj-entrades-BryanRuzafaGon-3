@@ -132,11 +132,22 @@ const nouEsdeveniment = reactive({
 })
 
 let socket = null
-const config = useRuntimeConfig()
+
+// Funció per detectar la IP del servidor dinàmicament (Requeriment acadèmic TR)
+const obtenirUrlsCodi = () => {
+  if (typeof window === 'undefined') return { api: '', socket: '' }
+  const hostname = window.location.hostname
+  return {
+    api: `http://${hostname}:8000/api`,
+    socket: `http://${hostname}:3001`
+  }
+}
+
+const urls = obtenirUrlsCodi()
 
 const carregarEstadistiques = async () => {
   try {
-    const res = await fetch(`${config.public.apiBase}/admin/estadistiques`, {
+    const res = await fetch(`${urls.api}/admin/estadistiques`, {
       headers: { 'Accept': 'application/json' }
     })
     const data = await res.json()
@@ -173,8 +184,8 @@ const guardarEsdeveniment = async () => {
   exitCreacio.value = false
 
   const url = editantId.value 
-    ? `${config.public.apiBase}/admin/esdeveniments/${editantId.value}`
-    : `${config.public.apiBase}/admin/esdeveniments`
+    ? `${urls.api}/admin/esdeveniments/${editantId.value}`
+    : `${urls.api}/admin/esdeveniments`
     
   const method = editantId.value ? 'PUT' : 'POST'
 
@@ -216,7 +227,7 @@ const eliminarEsdeveniment = async (id) => {
   if (!confirm("Estàs segur que vols eliminar aquest esdeveniment? Totes les dades i vendes associades s'esborraran permanentment.")) return;
 
   try {
-    const res = await fetch(`${config.public.apiBase}/admin/esdeveniments/${id}`, {
+    const res = await fetch(`${urls.api}/admin/esdeveniments/${id}`, {
       method: 'DELETE',
       headers: { 'Accept': 'application/json' }
     })
@@ -234,11 +245,7 @@ const eliminarEsdeveniment = async (id) => {
 onMounted(() => {
   carregarEstadistiques()
 
-  let host = config.public.socketHost;
-  if (typeof window !== 'undefined' && window.location.hostname !== 'localhost' && host.includes('localhost')) {
-    host = `http://${window.location.hostname}:3001`;
-  }
-  socket = io(host)
+  socket = io(urls.socket)
   
   socket.on('connect', () => {
     connected.value = true

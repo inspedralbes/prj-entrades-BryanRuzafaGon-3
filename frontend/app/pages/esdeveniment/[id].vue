@@ -62,10 +62,15 @@ import MapaSeients from '~/components/MapaSeients.vue'
 
 const route = useRoute()
 const dadesStore = usTaulerSeientsStore()
-const config = useRuntimeConfig()
+
+const obtenirUrlApi = () => {
+  if (typeof window === 'undefined') return ''
+  return `http://${window.location.hostname}:8000/api`
+}
+const urlApi = obtenirUrlApi()
 
 // Carreguem dades de l'esdeveniment via SSR/Fetch
-const { data: esdeveniment } = await useFetch(`${config.public.apiBase}/esdeveniments/${route.params.id}`);
+const { data: esdeveniment } = await useFetch(`${urlApi}/esdeveniments/${route.params.id}`);
 
 onMounted(() => {
   if (esdeveniment.value) {

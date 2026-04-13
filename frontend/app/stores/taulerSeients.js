@@ -27,21 +27,28 @@ export const usTaulerSeientsStore = defineStore('taulerSeients', {
        nom: '',
        email: ''
     }
+    }
     };
+  },
+
+  getters: {
+    // Detectem la IP del servidor dinàmicament per evitar problemes de connexió (localhost vs IP real)
+    obtenirUrls(state) {
+      if (typeof window === 'undefined') return { api: '', socket: '' };
+      const hostname = window.location.hostname;
+      return {
+        api: `http://${hostname}:8000/api`,
+        socket: `http://${hostname}:3001`
+      };
+    }
   },
 
   actions: {
     iniciarConnexioSocket(eid, seientsInicials) {
-      const config = useRuntimeConfig();
-      let host = config.public.socketHost;
+      const urls = this.obtenirUrls;
       
-      // Si estem en producció (per IP), forcem que el socket busqui la mateixa IP al port 3001
-      if (typeof window !== 'undefined' && window.location.hostname !== 'localhost' && host.includes('localhost')) {
-        host = `http://${window.location.hostname}:3001`;
-      }
-
       this.esdeveniment_id = eid;
-      this.socket = io(host);
+      this.socket = io(urls.socket);
 
       this.socket.on('connect', () => {
         this.connectat = true;
@@ -105,9 +112,9 @@ export const usTaulerSeientsStore = defineStore('taulerSeients', {
             return;
         }
 
-        const config = useRuntimeConfig();
+        const urls = this.obtenirUrls;
         // Persistència a Laravel
-        const resposta = await fetch(`${config.public.apiBase}/venda/confirmar`, {
+        const resposta = await fetch(`${urls.api}/venda/confirmar`, {
           method: 'POST',
           headers: { 
             'Content-Type': 'application/json',
