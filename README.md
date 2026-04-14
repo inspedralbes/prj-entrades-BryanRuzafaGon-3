@@ -27,5 +27,3 @@ L'objectiu principal és implementar un sistema de reserva i venda d'entrades qu
 - `/specs`: Especificacions OpenSpec del desenvolupament.
 
 ---
-
-*Projecte realitzat sota la metodologia Spec-Driven Development amb suport d'IA (Antigravity).*
